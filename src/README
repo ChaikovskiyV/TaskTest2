@@ -43,4 +43,4 @@ Solution of this task.
 The class CountingMinTime includes logic of this task solution.
 The class MainTask2 shows the execution of code.
 Also you can create new object of the class CountingMinTime with your parameter.
-The class MainTask2Test contains the tests of every methods of the MainTask2 class.
+The class CountingMinTimeTest contains the tests of every methods of the CountingMinTime class.
