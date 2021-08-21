@@ -4,76 +4,104 @@ import java.util.ArrayList;
 public class CountingMinTime {
     private int resultingTime;
     private String inputFileName;
-    private BufferedReader reader;
+    //The fist line from the file
+    private String fistLine = "";
+    //The others lines from the file
+    private ArrayList<String> lines;
+    //An array with data from a file
     private String[][][] labyrinth;
-    private String[] sizeOfArray;
-    private int h,m,n;
+    //A flag for starting or finishing of counting time
     private boolean start;
 
     public CountingMinTime(String inputFileName){
         this.inputFileName = inputFileName;
-        start = false;
-        try{
-            reader = new BufferedReader(new InputStreamReader(new FileInputStream(inputFileName)));
-            if(reader.ready()) {
-                sizeOfArray = reader.readLine().split(" ");
-                h = conversionStringToInt(sizeOfArray[0]);
-                m = conversionStringToInt(sizeOfArray[1]);
-                n = conversionStringToInt(sizeOfArray[2]);
-            }
 
-        } catch(IOException e){
-            System.out.println("Such file is not found.");
-        }
-
+        readDataFromFile();
         fillingArrayWithData();
         countingTime();
-        System.out.println(resultingTime);
+        System.out.println(getResultingTime());
     }
+
+    protected CountingMinTime(){}
 
     public void setInputFileName(String inputFileName) {
         this.inputFileName = inputFileName;
+    }
+
+    public void setFistLine(String fistLine) {
+        this.fistLine = fistLine;
+    }
+
+    public void setLines(ArrayList<String> lines) {
+        this.lines = lines;
+    }
+
+    public String getInputFileName() {
+        return inputFileName;
     }
 
     public int getResultingTime() {
         return resultingTime;
     }
 
-    protected void fillingArrayWithData() {
-        labyrinth = new String[h][m][n];
-        ArrayList<String> lines = new ArrayList<>();
+    protected String[][][] getLabyrinth() {
+        return labyrinth;
+    }
+
+    //Reading data from the file
+    protected void readDataFromFile(){
+        lines = new ArrayList<>();
         try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(inputFileName)));
             while (reader.ready()) {
+                //Reading the first line
+                if(fistLine.isEmpty())
+                    fistLine = reader.readLine();
+                //Reading the other lines and add them to list
                 String str = reader.readLine();
                 if (!str.isEmpty())
                     lines.add(str);
             }
             reader.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Such file hasn't been found");
         }
+    }
+
+    //Filling an array with data from the file
+    protected void fillingArrayWithData() {
+        //An array with the values of H, M and N
+        String[] hMN;
+        int h, m, n;
+        //Getting the values of H, M and N
+        hMN = fistLine.split(" ");
+        h = conversionStringToInt(hMN[0]);
+        m = conversionStringToInt(hMN[1]);
+        n = conversionStringToInt(hMN[2]);
+        //Filling the array
+        labyrinth = new String[h][m][n];
         for (int i = 0; i < labyrinth.length; i++) {
             for (int j = 0; j < labyrinth[i].length; j++) {
                 for (int k = 0; k < labyrinth[i][j].length; k++) {
+                    //The ordinal number of the line from the list
                     int index = i*labyrinth[i].length+j;
                     labyrinth[i][j][k] = lines.get(index).split("")[k];
                 }
             }
         }
     }
-
-    protected Integer conversionStringToInt(String str){
+//Conventing String to int
+    protected int conversionStringToInt(String str){
         int number = 0;
         try {
             if(Integer.valueOf(str) instanceof Integer)
                 number = Integer.parseInt(str);
-            else throw new IllegalArgumentException();
-        }catch (IllegalArgumentException ie){
+        }catch (NumberFormatException ne){
             System.out.println("It's not a digit");
         }
         return number;
     }
-
+//Counting the time
     protected void countingTime(){
         String step;
         for(int i = 0; i < labyrinth.length; i++){
@@ -89,6 +117,5 @@ public class CountingMinTime {
                 }
             }
         }
-
     }
 }
