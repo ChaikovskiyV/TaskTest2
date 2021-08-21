@@ -10,8 +10,6 @@ public class CountingMinTime {
     private ArrayList<String> lines;
     //An array with data from a file
     private String[][][] labyrinth;
-    //A flag for starting or finishing of counting time
-    private boolean start;
 
     public CountingMinTime(String inputFileName){
         this.inputFileName = inputFileName;
@@ -23,25 +21,37 @@ public class CountingMinTime {
     }
 
     protected CountingMinTime(){}
-
-    public void setInputFileName(String inputFileName) {
+//These setters and getters are used in unittests
+    protected void setInputFileName(String inputFileName) {
         this.inputFileName = inputFileName;
     }
 
-    public void setFistLine(String fistLine) {
+    protected void setFistLine(String fistLine) {
         this.fistLine = fistLine;
     }
 
-    public void setLines(ArrayList<String> lines) {
+    protected void setLines(ArrayList<String> lines) {
         this.lines = lines;
     }
 
-    public String getInputFileName() {
+    protected void setLabyrinth(String[][][] labyrinth) {
+        this.labyrinth = labyrinth;
+    }
+
+    protected int getResultingTime() {
+        return resultingTime;
+    }
+
+    protected String getInputFileName() {
         return inputFileName;
     }
 
-    public int getResultingTime() {
-        return resultingTime;
+    public String getFistLine() {
+        return fistLine;
+    }
+
+    public ArrayList<String> getLines() {
+        return lines;
     }
 
     protected String[][][] getLabyrinth() {
@@ -103,6 +113,8 @@ public class CountingMinTime {
     }
 //Counting the time
     protected void countingTime(){
+        //A flag for starting or finishing of counting time
+        boolean start = false;
         String step;
         for(int i = 0; i < labyrinth.length; i++){
             for (int j = 0; j < labyrinth[i].length; j++){
