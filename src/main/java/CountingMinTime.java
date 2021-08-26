@@ -1,21 +1,29 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class CountingMinTime {
-    private int resultingTime;
     private String inputFileName;
     //The fist line from the file
-    private String firstLine = "";
-    //The others lines from the file
     private ArrayList<String> lines;
     //An array with data from a file
     private String[][][] labyrinth;
+    //A flag of data check result
+    private CountTime countTime;
+    private CheckData checkData;
+
 
     public CountingMinTime(String inputFileName){
         this.inputFileName = inputFileName;
 
         lines = readDataFromFile(inputFileName);
-        CountTime countTime = new CountTime(fillingArrayWithData(conversionStringToInt(lines.get(0)),lines));
+        labyrinth = fillingArrayWithData(conversionStringToInt(lines.get(0)),lines);
+        checkData = new CheckData(labyrinth);
+
+        if(checkData.checkResult) {
+            countTime = new CountTime(labyrinth);
+        }
+        else System.out.println("File includes wrong data");
     }
 
     protected CountingMinTime(){}
@@ -24,28 +32,8 @@ public class CountingMinTime {
         this.inputFileName = inputFileName;
     }
 
-    protected void setLines(ArrayList<String> lines) {
-        this.lines = lines;
-    }
-
-    protected void setLabyrinth(String[][][] labyrinth) {
-        this.labyrinth = labyrinth;
-    }
-
-    protected int getResultingTime() {
-        return resultingTime;
-    }
-
     protected String getInputFileName() {
         return inputFileName;
-    }
-
-    public ArrayList<String> getLines() {
-        return lines;
-    }
-
-    protected String[][][] getLabyrinth() {
-        return labyrinth;
     }
 
     //Reading data from the file
@@ -96,7 +84,7 @@ public class CountingMinTime {
                 if(Integer.valueOf(strings[i]) instanceof Integer);
                 numbers[i] = Integer.parseInt(strings[i]);
             }catch (NumberFormatException ne){
-                System.out.println("It's not a digit");
+                System.out.println("Wrong data");
             }
         }
         return numbers;
@@ -252,7 +240,47 @@ public class CountingMinTime {
             }
         }
     }
+
+    class CheckData{
+        private String[][][] data;
+        private boolean checkResult;
+
+        public CheckData(String[][][] data){
+            this.data = data;
+
+            checkData(data);
+        }
+
+        public boolean isCheckResult() {
+            return checkResult;
+        }
+        //Checking data from a file
+        protected void checkData(String[][][] data){
+            String start = "1";
+            String freeZone = ".";
+            String column = "o";
+            String finish = "2";
+            for (int i = 0; i < data.length; i++) {
+                for (int j = 0; j < data[i].length; j++) {
+                    for (int k = 0; k < data[i][j].length; k++) {
+                        String str = data[i][j][k];
+                        if(str.equals(start))
+                            continue;
+                        else if(str.equals(freeZone))
+                            continue;
+                        else if(str.equals(column))
+                            continue;
+                        else if(str.equals(finish))
+                            continue;
+                        else
+                        {
+                            checkResult = false;
+                            return;
+                        }
+                    }
+                }
+            }
+            checkResult = true;
+        }
+    }
 }
-
-
-
