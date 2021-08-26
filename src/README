@@ -41,6 +41,6 @@ Output:
 
 Solution of this task.
 The class CountingMinTime includes logic of this task solution.
-The class MainTask2 shows the execution of code.
+The class MainTask2 shows the execution of code with file "inputFile".
 Also you can create new object of the class CountingMinTime with your parameter.
 The class CountingMinTimeTest contains the tests of every methods of the CountingMinTime class.
