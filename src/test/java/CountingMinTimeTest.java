@@ -18,6 +18,7 @@ class CountingMinTimeTest extends CountingMinTime {
     private String[] lines;
     private int [] numbers;
     private String [][][] expectedArray;
+    private CheckData checkData;
 
     private CountingMinTimeTest(){
         super();
@@ -104,5 +105,21 @@ class CountingMinTimeTest extends CountingMinTime {
         countTime.move();
 
         Assertions.assertEquals(expectedResult,countTime.getCountTime());
+    }
+
+    @Test
+    void testCheckData(){
+        checkData = this.new CheckData(expectedArray);
+
+        Assertions.assertTrue(checkData.isCheckResult());
+    }
+
+    @Test
+    void testCheckDataIfDataIsWrong(){
+        String [][][] newArray = expectedArray;
+        newArray[0][2][0] = "b";
+        checkData = this.new CheckData(newArray);
+
+        Assertions.assertFalse(checkData.isCheckResult());
     }
 }
