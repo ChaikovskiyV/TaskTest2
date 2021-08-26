@@ -14,21 +14,27 @@ import static org.junit.jupiter.api.Assertions.*;
 class CountingMinTimeTest extends CountingMinTime {
     private String someFile;
     private String firstLine;
+    private String number;
     private String[] lines;
+    private int [] numbers;
     private String [][][] expectedArray;
 
     private CountingMinTimeTest(){
         super();
 
         someFile = "someFile";
-        firstLine = "3 3 2";
-        lines = new String[]{"1.", "..", "oo",
-                             "o.", "34", "45",
-                             ".o", "oo", ".2"};
-        expectedArray = new String[][][]{{{"1", "."}, {".", "."}, {"o", "o"}},
-                                         {{"o", "."}, {"3", "4"}, {"4", "5"}},
-                                         {{".", "o"}, {"o", "o"}, {".", "2"}}};
-
+        number = "5 5 5";
+        firstLine = "4 4 4";
+        lines = new String[]{"4 4 4",
+                             "1...", "ooo.", ".oo.", "....",
+                             "oooo", "oo.o", "...o", "oooo",
+                             "oooo", "oo..", "ooo.", "....",
+                             "...2", ".ooo", ".ooo", ".ooo"};
+        expectedArray = new String[][][]{{{"1", ".", ".", "."}, {"o", "o", "o", "."}, {".", "o", "o", "."}, {".", ".", ".", "."}},
+                                         {{"o", "o", "o", "o"}, {"o", "o", ".", "o"}, {".", ".", ".", "o"}, {"o", "o", "o", "o"}},
+                                         {{"o", "o", "o", "o"}, {"o", "o", ".", "."}, {"o", "o", "o", "."}, {".", ".", ".", "."}},
+                                         {{".", ".", ".", "2"}, {".", "o", "o", "o"}, {".", "o", "o", "o"}, {".", "o", "o", "o"}}};
+        numbers = new int[]{4,4,4};
     }
 
     @BeforeEach
@@ -54,7 +60,7 @@ class CountingMinTimeTest extends CountingMinTime {
         try {
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(someFile)));
             writer.write(firstLine+"\n\n");
-            for (int i = 0, j = i+1; i < lines.length; i++, j++) {
+            for (int i = 1, j = i+1; i < lines.length; i++, j++) {
                 if(j%numberOfBlocks == 0)
                     writer.write(lines[i]+"\n\n");
                 else writer.write(lines[i]+"\n");
@@ -63,45 +69,40 @@ class CountingMinTimeTest extends CountingMinTime {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.setInputFileName(someFile);
-        this.readDataFromFile();
+        ArrayList<String> list = this.readDataFromFile(someFile);
 
-        Assertions.assertEquals(firstLine,this.getFistLine());
-        Assertions.assertEquals(Arrays.asList(lines),this.getLines());
+        Assertions.assertEquals(firstLine,list.get(0));
+        Assertions.assertEquals(Arrays.asList(lines),list);
     }
 
     @Test
     void testFillingArrayWithData() {
         ArrayList<String> list = new ArrayList<>(Arrays.asList(lines));
-        this.setFistLine(firstLine);
-        this.setLines(list);
-        this.fillingArrayWithData();
 
-        Assertions.assertTrue(Arrays.deepEquals(expectedArray,this.getLabyrinth()));
+        Assertions.assertArrayEquals(expectedArray,this.fillingArrayWithData(numbers,list));
     }
 
     @Test
     void testConversionStringToInt() {
-        String number = "555";
-        int expectedResult = 555;
+        int [] expectedResult = {5, 5, 5};
 
-        Assertions.assertEquals(expectedResult,this.conversionStringToInt(number));
+        Assertions.assertArrayEquals(expectedResult,this.conversionStringToInt(number));
     }
 
     @Test
     void whetherThrowExceptionIfNotConversionStringToInt(){
-        String notNumber = "a";
-        String message = "It's not a digit";
+        String notNumber = "5 a 6";
 
         Assertions.assertDoesNotThrow(()->this.conversionStringToInt(notNumber));
     }
 
     @Test
     void testCountingTime() {
-        int expectedResult = 30;
-        this.setLabyrinth(expectedArray);
-        this.countingTime();
+        int expectedResult = 140;
+        CountTime countTime = this.new CountTime();
+        countTime.setLabyrinth(expectedArray);
+        countTime.move();
 
-        Assertions.assertEquals(expectedResult,this.getResultingTime());
+        Assertions.assertEquals(expectedResult,countTime.getCountTime());
     }
 }
